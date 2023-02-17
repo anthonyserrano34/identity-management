@@ -14,6 +14,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSelectModule } from '@angular/material/select';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
 exports: [
@@ -30,6 +32,9 @@ MatPaginatorModule,
 MatFormFieldModule,
 MatInputModule,
 MatSlideToggleModule,
+MatSelectModule,
+MatTooltipModule,
+MatProgressSpinnerModule,
 MatSelectModule
 ]
 })

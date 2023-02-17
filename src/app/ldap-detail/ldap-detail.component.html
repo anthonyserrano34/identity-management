@@ -1,0 +1,65 @@
+<h3 class="mat-h3">
+    <button mat-icon-button (click)="goToLdap()">
+        <mat-icon aria-label="Accueil">arrow_back</mat-icon>
+    </button>
+    Edition d'un utilisateur
+</h3>
+
+<section class="leading" *ngIf="processLoadRunning==true">
+    <mat-spinner diameter="25"></mat-spinner>
+    <span>&nbsp; En cours de chargement ...</span>
+</section>
+
+<form class="user-form" *ngIf="processLoadRunning==false" [formGroup]="userForm" (ngSubmit)="onSubmitForm()">
+    <table class="user-full-width">
+        <tr>
+            <td>
+                <mat-form-field class="user-full-width">
+                    <input matInput class="form-control" placeholder="Nom de l'utilisateur" formControlName="nom"
+                        id="nom" required (input)="updateLogin()" />
+                </mat-form-field>
+            </td>
+            <td>
+                <mat-form-field class="user-full-width">
+                    <input matInput class="form-control" placeholder="Prénom de l'utilisateur" formControlName="prenom"
+                        id="prenom" required (input)="updateLogin()" />
+                </mat-form-field>
+        </tr>
+    </table>
+
+    <table>
+        <tr>
+            <td>
+                <mat-form-field class="user-full-width">
+                    <input matInput class="form-control" placeholder="Login de l'utilisateur" formControlName="login"
+                        id="login" required (input)="updateMail"/>
+                </mat-form-field>
+            </td>
+            <td>
+                <mat-form-field class="user-full-width">
+                    <input matInput class="form-control" placeholder="Mail de l'utilisateur" formControlName="email"
+                        id="email"/>
+                </mat-form-field>
+            </td>
+            <td>
+                <mat-form-field class="user-full-width">
+                    <input matInput class="form-control" placeholder="Mot de passe" formControlName="password"
+                        id="password"/>
+                </mat-form-field>
+            </td>
+            <td>
+                <mat-form-field class="user-full-width">
+                    <input matInput class="form-control" placeholder="Confirmation du mot de passe"
+                        formControlName="passwordConfirm" id="passwordConfirm" />
+                </mat-form-field>
+            </td>
+        </tr>
+    </table>
+
+    <div style="display: flex; justify-content: flex-end;">
+        <button type="submit" mat-stroked-button color="primary" [disabled]="processValidRunning || !isFormValid()">
+            <mat-icon *ngIf="processValidRunning"><mat-spinner diameter="16"></mat-spinner></mat-icon>
+            Valider
+        </button>
+    </div>
+</form>

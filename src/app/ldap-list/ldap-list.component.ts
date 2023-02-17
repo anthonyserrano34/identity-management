@@ -18,14 +18,17 @@ export class LdapListComponent implements OnInit{
 
   @ViewChild(MatPaginator,{static:true}) paginator:MatPaginator;
   constructor(private usersService:UsersService,private router:Router) { }
+
   ngOnInit():void{
     this.dataSource.paginator = this.paginator;
     this.dataSource.filterPredicate= (data: UserLdap, filter: string) => this.filterPredicate(data,filter);
     this.getUsers();
   }
+
   filterPredicate(data: { nomComplet: string; },filter: string):boolean{
     return !filter || data.nomComplet.toLowerCase().startsWith(filter);
   }
+
   applyFilter($event :KeyboardEvent):void{
     const filterValue =($event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
@@ -47,5 +50,12 @@ export class LdapListComponent implements OnInit{
   unactiveChanged($event:MatSlideToggleChange):void{
     this.unactiveSelected = $event.checked;
     this.getUsers();
+  }
+
+  edit(login: string) {
+    this.router.navigate(['/user',login]).then((e) => {
+      if (! e) {
+        console.log("Navigation has failed!");
+      }});
   }
 }
