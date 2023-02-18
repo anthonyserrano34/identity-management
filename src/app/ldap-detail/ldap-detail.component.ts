@@ -4,17 +4,15 @@ import { Location } from '@angular/common';
 import { UsersService } from '../service/users.service';
 import { UserLdap } from '../model/user-ldap';
 import { FormBuilder } from '@angular/forms';
+import { ConfirmValidParentMatcher, passwordValidator } from './passwords-validator.directive';
 
-@Component({
-  selector: 'app-ldap-detail',
-  templateUrl: './ldap-detail.component.html',
-  styleUrls: ['./ldap-detail.component.scss']
-})
-
-export class LdapDetailComponent implements OnInit {
+export abstract class LdapDetailComponent {
   user: UserLdap;
   processLoadRunning = false;
-  processValidRunning = false;
+  processValidateRunning = false;
+  passwordPlaceholder: string;
+  errorMessage = '';
+  confirmValidParentMatcher = new ConfirmValidParentMatcher();
 
   userForm = this.fb.group({
     login: [''],
@@ -23,36 +21,67 @@ export class LdapDetailComponent implements OnInit {
     passwordGroup: this.fb.group({
       password: [''],
       confirmPassword: ['']
-    }),
-    mail : {value: '', disabled: true},
+    }, { validators: passwordValidator }),
+    mail: { value: '', disabled: true },
   });
 
-  constructor(private usersService: UsersService, private route: ActivatedRoute, private fb: FormBuilder, private router: Router) { }
-  
-  ngOnInit(): void{
-    this.getUser();
+  protected constructor(public addForm: boolean, private fb: FormBuilder, private router: Router) {
+    this.passwordPlaceholder = 'Mot de passe' + (this.addForm ? '' : ' (laisser vide pour ne pas changer)');
   }
 
-  private getUser(): void {
-    const login = this.route.snapshot.paramMap.get('id');
-    console.log("getUser = " + login);
-  }
+  protected OnInit(): void {}
 
   private formGetValue(name: string): any {
-    return this.userForm.get(name)!.value;
+    return this.userForm.get(name).value;
   }
 
-  goToLdap() : void {
+  abstract validateForm(): void;
+
+  goToLdap(): void {
     this.router.navigate(['/users/list']);
   }
 
-  onSubmitForm() : void {}
-  updateLogin() : void {
-    this.userForm.get('login')!.setValue(this.formGetValue('prenom') + '.' + this.formGetValue('nom').toLowerCase());
-    this.updateMail();
+  onSubmitForm() {
+    this.validateForm();
   }
-  updateMail() : void {
-    this.userForm.get('mail')!.setValue(this.formGetValue('login').toLowerCase() + '@epsi.lan');
+
+  updateLogin(): void {
+    if (this.addForm) {
+      this.userForm.get('login')!.setValue(this.formGetValue('prenom') + '.' + this.formGetValue('nom').toLowerCase());
+      this.updateMail();
+    }
   }
-  isFormValid() : boolean { return false; }
+
+  updateMail(): void {
+    if (this.addForm){
+      this.userForm.get('mail')!.setValue(this.formGetValue('login').toLowerCase() + '@epsi.lan');
+    }
+  }
+
+  isFormValid(): boolean { return this.userForm.valid && (!this.addForm || this.formGetValue('passwordGroup.password') !== '') }
+
+  protected copyUserToFormControl(): void {
+    this.userForm.get('login')!.setValue(this.user.login);
+    this.userForm.get('nom')!.setValue(this.user.nom);
+    this.userForm.get('prenom')!.setValue(this.user.prenom);
+    this.userForm.get('mail')!.setValue(this.user.mail);
+  }
+
+  protected getUserFromFormControl(): UserLdap {
+    return {
+      login: this.userForm.get('login')!.value,
+      nom: this.userForm.get('nom')!.value,
+      prenom: this.userForm.get('prenom')!.value,
+      nomComplet: this.userForm.get('nom')!.value + ' ' + this.userForm.get('prenom')!.value,
+      mail: this.userForm.get('mail')!.value,
+      employeNumero: 1,
+      employeNiveau: 1,
+      dateEmbauche: '2020-04-24',
+      publisherId: 1,
+      active: true,
+      motDePasse: '',
+      role: 'ROLE_USER',
+    };
+    
+  }
 }

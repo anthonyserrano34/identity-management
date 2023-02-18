@@ -16,6 +16,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 
 @NgModule({
 exports: [
@@ -35,7 +36,12 @@ MatSlideToggleModule,
 MatSelectModule,
 MatTooltipModule,
 MatProgressSpinnerModule,
-MatSelectModule
+MatSelectModule,
+MatSnackBarModule,
+],
+
+providers: [
+    { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 2500, verticalPosition: 'top' } }
 ]
 })
 export class AppMaterialModule { }

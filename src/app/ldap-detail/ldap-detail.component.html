@@ -2,13 +2,15 @@
     <button mat-icon-button (click)="goToLdap()">
         <mat-icon aria-label="Accueil">arrow_back</mat-icon>
     </button>
-    Edition d'un utilisateur
+    {{addForm ? "Ajout d'un utilisateur" : "Modification d'un utilisateur"}}
 </h3>
 
 <section class="leading" *ngIf="processLoadRunning==true">
     <mat-spinner diameter="25"></mat-spinner>
     <span>&nbsp; En cours de chargement ...</span>
 </section>
+
+<app-alert *ngIf="errorMessage.length > 0" [type]="'danger'">{{ errorMessage }}</app-alert>
 
 <form class="user-form" *ngIf="processLoadRunning==false" [formGroup]="userForm" (ngSubmit)="onSubmitForm()">
     <table class="user-full-width">
@@ -17,48 +19,60 @@
                 <mat-form-field class="user-full-width">
                     <input matInput class="form-control" placeholder="Nom de l'utilisateur" formControlName="nom"
                         id="nom" required (input)="updateLogin()" />
+                    <mat-error>Le nom est requis</mat-error>
                 </mat-form-field>
             </td>
             <td>
                 <mat-form-field class="user-full-width">
                     <input matInput class="form-control" placeholder="Prénom de l'utilisateur" formControlName="prenom"
                         id="prenom" required (input)="updateLogin()" />
+                    <mat-error>Le prénom est requis</mat-error>
                 </mat-form-field>
         </tr>
     </table>
 
-    <table>
+    <table class="user-full-width">
         <tr>
             <td>
                 <mat-form-field class="user-full-width">
                     <input matInput class="form-control" placeholder="Login de l'utilisateur" formControlName="login"
-                        id="login" required (input)="updateMail"/>
+                        id="login" required (input)="updateMail()" />
+                    <mat-error>Le login est requis</mat-error>
                 </mat-form-field>
             </td>
             <td>
                 <mat-form-field class="user-full-width">
-                    <input matInput class="form-control" placeholder="Mail de l'utilisateur" formControlName="email"
-                        id="email"/>
-                </mat-form-field>
-            </td>
-            <td>
-                <mat-form-field class="user-full-width">
-                    <input matInput class="form-control" placeholder="Mot de passe" formControlName="password"
-                        id="password"/>
-                </mat-form-field>
-            </td>
-            <td>
-                <mat-form-field class="user-full-width">
-                    <input matInput class="form-control" placeholder="Confirmation du mot de passe"
-                        formControlName="passwordConfirm" id="passwordConfirm" />
+                    <input matInput name="mail" placeholder="Mail de l'utilisateur" formControlName="mail"
+                        id="mail" />
                 </mat-form-field>
             </td>
         </tr>
     </table>
 
+    <table class="user-full-width" formGroupName="passwordGroup">
+        <tr>
+            <td>
+                <mat-form-field class="user-full-width">
+                    <input type="password" matInput [placeholder]="passwordPlaceholder" formControlName="password"
+                        [errorStateMatcher]="confirmValidParentMatcher" id="password" />
+                    <mat-error>Les mots de passes doivent être identiques.</mat-error>
+                </mat-form-field>
+            </td>
+            <td>
+                <mat-form-field class="user-full-width">
+                    <input type="password" matInput class="form-control" placeholder="Confirmation du mot de passe"
+                        formControlName="confirmPassword" id="confirmPassword"
+                        [errorStateMatcher]="confirmValidParentMatcher" />
+                    <mat-error>Les mots de passes doivent être identiques.</mat-error>
+                </mat-form-field>
+            </td>
+        </tr>
+    </table>
+
+
     <div style="display: flex; justify-content: flex-end;">
-        <button type="submit" mat-stroked-button color="primary" [disabled]="processValidRunning || !isFormValid()">
-            <mat-icon *ngIf="processValidRunning"><mat-spinner diameter="16"></mat-spinner></mat-icon>
+        <button type="submit" mat-stroked-button color="primary" [disabled]="processValidateRunning || !isFormValid()">
+            <mat-icon *ngIf="processValidateRunning"><mat-spinner diameter="16"></mat-spinner></mat-icon>
             Valider
         </button>
     </div>
