@@ -53,14 +53,14 @@ export class LdapListComponent implements OnInit{
   }
 
   edit(id:number) {
-    this.router.navigate(['/user',id]).then((e) => {
+    this.router.navigate(['/users',id]).then((e) => {
       if (! e) {
         console.log("Navigation has failed!");
       }});
   }
 
   addUser(){
-    this.router.navigate(['/user/add']).then((e) => {
+    this.router.navigate(['/users/add']).then((e) => {
       if (! e) {
         console.log("Navigation has failed!");
       }});

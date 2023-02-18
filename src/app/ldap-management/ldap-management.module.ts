@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { LdapManagementRoutingModule } from './ldap-management-routing.module';
 import {LdapListComponent} from "./ldap-list/ldap-list.component";
 import {LdapAddComponent} from "./ldap-add/ldap-add.component";
@@ -13,6 +12,7 @@ import {HttpClientModule} from "@angular/common/http";
 import {HttpClientInMemoryWebApiModule} from "angular-in-memory-web-api";
 import {NavbarComponent} from "./navbar/navbar.component";
 import {InMemoryUsersService} from "../service/in-memory-users.service";
+import {AppModule} from "../app.module";
 
 @NgModule({
   declarations: [
